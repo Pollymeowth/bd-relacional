@@ -1,0 +1,62 @@
+--1 Listar o nome e a cidade dos fornecedores com mais de 10 peças.Contar só as peças de código 1.
+
+SELECT f.nome, f.cidadeFROM  tbl_fornecedor f
+JOIN tbl_estoque e ON f.cod_fornecedor = e.cod_fornecedor
+WHERE e.cod_peca = 1
+GROUP BY f.nome, f.cidade
+HAVING SUM(e.quantidade) > 10;
+
+--2  Encontre o nome das peças com preço superior a 10 que estão disponíveis em estoque:
+
+SELECT p.nome FROM tbl_peca p
+JOIN tbl_estoque e ON p.cod_peca = e.cod_peca
+WHERE p.preco > 10;
+
+--3 Selecione o nome das peças que não estão em estoque:
+
+SELECT p.nome FROM tbl_peca p
+LEFT JOIN tbl_estoque e ON p.cod_peca = e.cod_peca
+WHERE e.cod_peca IS NULL;
+
+--4 Encontre o nome das peças que estão em estoque com uma quantidade maior que 20:
+
+SELECT p.nome FROM tbl_peca p
+JOIN tbl_estoque e ON p.cod_peca = e.cod_peca
+WHERE e.quantidade > 20;
+
+--5 Listar todas as pecas exceto a PLACA, ordenado por nome
+
+SELECT nome FROM tbl_peca
+WHERE nome != 'PLACA'
+ORDER BY nome;
+
+--6 Listar o nome e a cor das peças do fornecedor C, ordenado pelo nome da peça
+
+SELECT p.nome AS peca, p.cor FROM tbl_peca p
+JOIN tbl_estoque e ON p.cod_peca = e.cod_peca
+WHERE e.cod_fornecedor = 3
+ORDER BY p.nome;
+
+
+--7 Listar o nome e a cor de todas as pecas de Londres
+
+SELECT nome, cor FROM tbl_peca
+WHERE cidade = 'LONDRES';
+
+--8 Encontre o nome das peças que estão disponíveis em estoque em Londres e não estão disponíveis em estoque em Paris:
+
+SELECT p.nome FROM tbl_peca p
+JOIN tbl_estoque e ON p.cod_peca = e.cod_peca
+WHERE p.cidade = 'LONDRES'
+    AND p.cod_peca NOT IN (SELECT e.cod_peca FROM tbl_peca p
+        JOIN tbl_estoque e ON p.cod_peca = e.cod_peca
+        WHERE p.cidade = 'PARIS');
+
+
+
+--9 Quais os codigos das peças que possuem maior estoque do que a peça de codigo 2?
+
+SELECT cod_pecaFROM tbl_estoque
+GROUP BY cod_peca
+HAVING SUM(quantidade) > (SELECT SUM(quantidade) FROM tbl_estoque
+        WHERE cod_peca = 2);
