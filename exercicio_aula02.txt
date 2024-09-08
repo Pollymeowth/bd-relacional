@@ -2,7 +2,6 @@
 
 CREATE DATABASE bd_sistema_bancario;
 
-
 -- Criar 5 tabelas quaisquer
 
 CREATE TABLE Clientes (
@@ -43,63 +42,42 @@ CREATE TABLE Agencias (
 );
 -- Criar tabelas conforme MER (Sistema Bancario):
 
+CREATE TABLE Cliente (
+    nome_cliente VARCHAR(100) PRIMARY KEY,
+    cidade_cliente VARCHAR(50),
+    endereco_cliente CHAR(100)
+);
+
+CREATE TABLE Agencia (
+    nome_agencia VARCHAR(50) PRIMARY KEY,
+    cidade_agencia VARCHAR(100),
+    depositos DECIMAL(15, 2)
+);
+
+CREATE TABLE Conta (
+    numero_conta INT PRIMARY KEY,
+    FOREIGN KEY (nome_agencia) REFERENCES Agencia(nome_agencia)
+    Saldo DECIMAL(15, 2),
+);
+
+CREATE TABLE Emprestimo (
+    numero_emprestimo INT PRIMARY KEY,
+    FOREIGN KEY (nome_agencia) REFERENCES Agencia(nome_agencia),
+    Valor DECIMAL(15, 2)
+);
 
 -- Deletar as 5 tabelas criadas aleatoriamente
 
-DROP TABLE IF EXISTS Clientes;
-DROP TABLE IF EXISTS Contas;
-DROP TABLE IF EXISTS Transacoes;
-DROP TABLE IF EXISTS Funcionarios;
-DROP TABLE IF EXISTS Agencias;
-
+DROP TABLE IF EXISTS Emprestimo;
+DROP TABLE IF EXISTS Conta;
+DROP TABLE IF EXISTS Agencia;
+DROP TABLE IF EXISTS Cliente;
 
 -- alterar as tabelas conforme o MER atualizado
 
-CREATE TABLE Clientes (
-    ClienteID INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    CPF CHAR(11) UNIQUE NOT NULL,
-    DataNascimento DATE NOT NULL,
-    Endereco VARCHAR(255),
-    Telefone VARCHAR(15)
-);
+ALTER TABLE Cliente ADD COLUMN idade INT, ADD COLUMN CPF CHAR(11) UNIQUE;
 
-CREATE TABLE Agencias (
-    AgenciaID INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Endereco VARCHAR(255) NOT NULL,
-    Telefone VARCHAR(15)
-);
-
-CREATE TABLE Contas (
-    ContaID INT AUTO_INCREMENT PRIMARY KEY,
-    ClienteID INT,
-    AgenciaID INT,
-    TipoConta ENUM('Corrente', 'Poupança') NOT NULL,
-    Saldo DECIMAL(15, 2) DEFAULT 0.00,
-    DataAbertura DATE NOT NULL,
-    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID),
-    FOREIGN KEY (AgenciaID) REFERENCES Agencias(AgenciaID)
-);
-
-CREATE TABLE Transacoes (
-    TransacaoID INT AUTO_INCREMENT PRIMARY KEY,
-    ContaID INT,
-    TipoTransacao ENUM('Depósito', 'Saque', 'Transferência') NOT NULL,
-    Valor DECIMAL(15, 2) NOT NULL,
-    DataTransacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ContaID) REFERENCES Contas(ContaID)
-);
-
-CREATE TABLE Funcionarios (
-    FuncionarioID INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(100) NOT NULL,
-    Cargo VARCHAR(50) NOT NULL,
-    DataContratacao DATE NOT NULL,
-    AgenciaID INT,
-    FOREIGN KEY (AgenciaID) REFERENCES Agencias(AgenciaID)
-);
-
+ALTER TABLE Agencia RENAME COLUMN cidade_agencia TO endereco_agencia;
 
 -- Criar um esquema com o seu nome
 
