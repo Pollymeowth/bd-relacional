@@ -1,0 +1,106 @@
+-- Criar banco de dados bd_sistema_bancario
+
+CREATE DATABASE bd_sistema_bancario;
+
+
+-- Criar 5 tabelas quaisquer
+
+CREATE TABLE Clientes (
+    ClienteID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    CPF CHAR(11) UNIQUE,
+    DataNascimento DATE
+);
+
+CREATE TABLE Contas (
+    ContaID INT PRIMARY KEY,
+    ClienteID INT,
+    TipoConta ENUM('Corrente', 'Poupança'),
+    Saldo DECIMAL(15, 2),
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)
+);
+
+CREATE TABLE Transacoes (
+    TransacaoID INT PRIMARY KEY,
+    ContaID INT,
+    TipoTransacao ENUM('Depósito', 'Saque', 'Transferência'),
+    Valor DECIMAL(15, 2),
+    DataTransacao DATETIME,
+    FOREIGN KEY (ContaID) REFERENCES Contas(ContaID)
+);
+
+CREATE TABLE Funcionarios (
+    FuncionarioID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Cargo VARCHAR(50),
+    DataContratacao DATE
+);
+
+CREATE TABLE Agencias (
+    AgenciaID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Endereco VARCHAR(255)
+);
+-- Criar tabelas conforme MER (Sistema Bancario):
+
+
+-- Deletar as 5 tabelas criadas aleatoriamente
+
+DROP TABLE IF EXISTS Clientes;
+DROP TABLE IF EXISTS Contas;
+DROP TABLE IF EXISTS Transacoes;
+DROP TABLE IF EXISTS Funcionarios;
+DROP TABLE IF EXISTS Agencias;
+
+
+-- alterar as tabelas conforme o MER atualizado
+
+CREATE TABLE Clientes (
+    ClienteID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    CPF CHAR(11) UNIQUE NOT NULL,
+    DataNascimento DATE NOT NULL,
+    Endereco VARCHAR(255),
+    Telefone VARCHAR(15)
+);
+
+CREATE TABLE Agencias (
+    AgenciaID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Endereco VARCHAR(255) NOT NULL,
+    Telefone VARCHAR(15)
+);
+
+CREATE TABLE Contas (
+    ContaID INT AUTO_INCREMENT PRIMARY KEY,
+    ClienteID INT,
+    AgenciaID INT,
+    TipoConta ENUM('Corrente', 'Poupança') NOT NULL,
+    Saldo DECIMAL(15, 2) DEFAULT 0.00,
+    DataAbertura DATE NOT NULL,
+    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID),
+    FOREIGN KEY (AgenciaID) REFERENCES Agencias(AgenciaID)
+);
+
+CREATE TABLE Transacoes (
+    TransacaoID INT AUTO_INCREMENT PRIMARY KEY,
+    ContaID INT,
+    TipoTransacao ENUM('Depósito', 'Saque', 'Transferência') NOT NULL,
+    Valor DECIMAL(15, 2) NOT NULL,
+    DataTransacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ContaID) REFERENCES Contas(ContaID)
+);
+
+CREATE TABLE Funcionarios (
+    FuncionarioID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Cargo VARCHAR(50) NOT NULL,
+    DataContratacao DATE NOT NULL,
+    AgenciaID INT,
+    FOREIGN KEY (AgenciaID) REFERENCES Agencias(AgenciaID)
+);
+
+
+-- Criar um esquema com o seu nome
+
+CREATE DATABASE PollyanaDB;
